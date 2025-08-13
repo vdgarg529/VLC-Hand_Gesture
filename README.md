@@ -1,8 +1,5 @@
 # 🎯 VLC Hand Gesture Controled  
-[![Python](https://img.shields.io/badge/Python-3.8%2B-blue)](https://www.python.org/)  
-[![PyTorch](https://img.shields.io/badge/PyTorch-2.x-red)](https://pytorch.org/)  
-[![MediaPipe](https://img.shields.io/badge/MediaPipe-Hands-green)](https://developers.google.com/mediapipe)  
-[![OpenCV](https://img.shields.io/badge/OpenCV-4.x-yellow)](https://opencv.org/)  
+[![Python](https://img.shields.io/badge/Python-3.8%2B-blue)](https://www.python.org/)  [![PyTorch](https://img.shields.io/badge/PyTorch-2.x-red)](https://pytorch.org/)  [![MediaPipe](https://img.shields.io/badge/MediaPipe-Hands-green)](https://developers.google.com/mediapipe)  [![OpenCV](https://img.shields.io/badge/OpenCV-4.x-yellow)](https://opencv.org/)  
 
 **Gesture-controlled VLC using MediaPipe + Neural Network**  
 
