@@ -5,10 +5,8 @@
 
 
 ## 📺 Demo
-*(Add a GIF or screenshot here)*  
-```bash
-python main.py
-```
+*Coming Soon*  
+
 
 ---
 
