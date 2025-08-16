@@ -1,12 +1,38 @@
-# 🎯 VLC Hand Gesture Controled  
-[![Python](https://img.shields.io/badge/Python-3.8%2B-blue)](https://www.python.org/)  [![PyTorch](https://img.shields.io/badge/PyTorch-2.x-red)](https://pytorch.org/)  [![MediaPipe](https://img.shields.io/badge/MediaPipe-Hands-green)](https://developers.google.com/mediapipe)  [![OpenCV](https://img.shields.io/badge/OpenCV-4.x-yellow)](https://opencv.org/)  
+# 🎯 VLC Gesture Control  
+[![Python](https://img.shields.io/badge/Python-3.8%2B-blue)](https://www.python.org/)  
+[![PyTorch](https://img.shields.io/badge/PyTorch-2.x-red)](https://pytorch.org/)  
+[![MediaPipe](https://img.shields.io/badge/MediaPipe-Hands-green)](https://developers.google.com/mediapipe)  
+[![OpenCV](https://img.shields.io/badge/OpenCV-4.x-yellow)](https://opencv.org/)  
 
 **Gesture-controlled VLC using MediaPipe + Neural Network**  
 
+---
+
+## 📚 Table of Contents
+1. [Demo](#-demo)
+2. [Features](#-features)
+3. [How It Works](#-how-it-works-architecture)
+4. [VLC Media Player Setup](#-vlc-media-player-setup-step-by-step)
+5. [Project Installation & Setup](#-project-installation--setup)
+6. [Model: Training & Data Collection](#-model-training--data-collection)
+7. [Test/Preview: Live Recognition](#-testpreview-live-recognition)
+8. [VLC Control Runtime](#-vlc-control-runtime)
+9. [Configuration](#-configuration)
+10. [File-by-File Explanation](#-file-by-file-explanation)
+11. [Performance Tips & Tuning](#-performance-tips--tuning)
+12. [Troubleshooting & FAQ](#-troubleshooting--faq)
+13. [Security & Privacy](#-security--privacy)
+14. [Roadmap / Ideas](#-roadmap--ideas)
+15. [License](#-license)
+16. [Acknowledgements](#-acknowledgements)
+
+---
 
 ## 📺 Demo
-*Coming Soon*  
-
+*(Add a GIF or screenshot here)*  
+```bash
+python main.py
+```
 
 ---
 
@@ -26,11 +52,11 @@
 ## 🛠 How It Works (Architecture)
 ```mermaid
 flowchart LR
-    A[Camera] --> B["MediaPipe Hands (landmark extraction)"]
+    A[Camera] --> B[MediaPipe Hands<br>(landmark extraction)]
     B --> C[Preprocessing]
-    C --> D["Neural Net Classifier (PyTorch)"]
-    D --> E["Gesture FSM (Palm-gated logic)"]
-    E --> F["VLC Controller (Hotkeys / HTTP API)"]
+    C --> D[Neural Net Classifier<br>(PyTorch)]
+    D --> E[Gesture FSM<br>(Palm-gated logic)]
+    E --> F[VLC Controller<br>(Hotkeys / HTTP API)]
 ```
 - **One-shot**: `fist`, `two_fingers` — triggered once per palm session.  
 - **Continuous**: `finger_up`, `finger_down` — repeat until palm shown again or hand removed.
@@ -208,6 +234,13 @@ CAMERA_INDEX=0
 - On-screen HUD overlay  
 - Calibration wizard
 
+---
+
+## 📜 License
+SPDX-License-Identifier: MIT  
+This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
+
+---
 
 ## 🙏 Acknowledgements
 - [MediaPipe Hands](https://developers.google.com/mediapipe)  

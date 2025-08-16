@@ -43,7 +43,7 @@ class GestureNet(torch.nn.Module):
 print("Loading model...")
 try:
     model = GestureNet(input_size=63, hidden_size=128, num_classes=5).to(device)
-    model.load_state_dict(torch.load(r"Neural Network\models\gesture_model.pth", map_location=device))
+    model.load_state_dict(torch.load(r"models\gesture_model.pth", map_location=device))
     model.eval()
     print("Model loaded successfully")
 except Exception as e:
@@ -52,7 +52,7 @@ except Exception as e:
 
 print("Loading labels...")
 try:
-    gestures = joblib.load(r"Neural Network\models\gesture_labels.pkl")
+    gestures = joblib.load(r"models\gesture_labels.pkl")
     print(f"Loaded {len(gestures)} gesture labels: {gestures}")
 except Exception as e:
     print(f"Error loading labels: {e}")
