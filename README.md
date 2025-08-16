@@ -26,11 +26,12 @@
 ## 🛠 How It Works (Architecture)
 ```mermaid
 flowchart LR
-    A[Camera] --> B[MediaPipe Hands<br>(landmark extraction)]
+    A[Camera] --> B["MediaPipe Hands\n(landmark extraction)"]
     B --> C[Preprocessing]
-    C --> D[Neural Net Classifier<br>(PyTorch)]
-    D --> E[Gesture FSM<br>(Palm-gated logic)]
-    E --> F[VLC Controller<br>(Hotkeys / HTTP API)]
+    C --> D["Neural Net Classifier\n(PyTorch)"]
+    D --> E["Gesture FSM\n(Palm-gated logic)"]
+    E --> F["VLC Controller\n(Hotkeys / HTTP API)"]
+
 ```
 - **One-shot**: `fist`, `two_fingers` — triggered once per palm session.  
 - **Continuous**: `finger_up`, `finger_down` — repeat until palm shown again or hand removed.
