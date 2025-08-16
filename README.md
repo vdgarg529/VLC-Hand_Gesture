@@ -1,38 +1,12 @@
-# 🎯 VLC Gesture Control  
-[![Python](https://img.shields.io/badge/Python-3.8%2B-blue)](https://www.python.org/)  
-[![PyTorch](https://img.shields.io/badge/PyTorch-2.x-red)](https://pytorch.org/)  
-[![MediaPipe](https://img.shields.io/badge/MediaPipe-Hands-green)](https://developers.google.com/mediapipe)  
-[![OpenCV](https://img.shields.io/badge/OpenCV-4.x-yellow)](https://opencv.org/)  
+# 🎯 VLC Gesture Controled  
+[![Python](https://img.shields.io/badge/Python-3.8%2B-blue)](https://www.python.org/)  [![PyTorch](https://img.shields.io/badge/PyTorch-2.x-red)](https://pytorch.org/)  [![MediaPipe](https://img.shields.io/badge/MediaPipe-Hands-green)](https://developers.google.com/mediapipe)  [![OpenCV](https://img.shields.io/badge/OpenCV-4.x-yellow)](https://opencv.org/)  
 
 **Gesture-controlled VLC using MediaPipe + Neural Network**  
 
----
-
-## 📚 Table of Contents
-1. [Demo](#-demo)
-2. [Features](#-features)
-3. [How It Works](#-how-it-works-architecture)
-4. [VLC Media Player Setup](#-vlc-media-player-setup-step-by-step)
-5. [Project Installation & Setup](#-project-installation--setup)
-6. [Model: Training & Data Collection](#-model-training--data-collection)
-7. [Test/Preview: Live Recognition](#-testpreview-live-recognition)
-8. [VLC Control Runtime](#-vlc-control-runtime)
-9. [Configuration](#-configuration)
-10. [File-by-File Explanation](#-file-by-file-explanation)
-11. [Performance Tips & Tuning](#-performance-tips--tuning)
-12. [Troubleshooting & FAQ](#-troubleshooting--faq)
-13. [Security & Privacy](#-security--privacy)
-14. [Roadmap / Ideas](#-roadmap--ideas)
-15. [License](#-license)
-16. [Acknowledgements](#-acknowledgements)
-
----
 
 ## 📺 Demo
-*(Add a GIF or screenshot here)*  
-```bash
-python main.py
-```
+*(Coming soon)*  
+
 
 ---
 
@@ -83,13 +57,8 @@ Download: [VLC Official Site](https://www.videolan.org/vlc/)
 5. Launch VLC with HTTP enabled:  
    ```bash
    vlc --intf http --http-password vlcpassword
-   ```
+   ```  
 6. Test: Visit `http://localhost:8080` in browser.
-
-### 🔧 Troubleshooting
-- **Port busy**: Change VLC HTTP port in preferences.  
-- **Firewall**: Allow VLC through firewall.  
-- **HTTP Auth errors**: Check password in `.env` or `vlc_controller.py`.
 
 ---
 
@@ -107,38 +76,52 @@ venv\Scripts\activate  # Windows
 # Install dependencies
 pip install -r requirements.txt
 ```
+
 **Core dependencies:**  
 ```bash
 pip install opencv-python mediapipe torch joblib psutil pyautogui requests
 ```
 
-Verify:
-```python
-import torch; print(torch.cuda.is_available())  # True if GPU available
-```
-
 ---
 
 ## 📦 Model: Training & Data Collection
-1. **Collect data**:  
-```bash
-python code/train_model.py
-```
-- `c` → capture sample  
-- `n` → skip to next gesture  
-- `ESC` → exit early  
 
-2. **Augmentation**: Random rotation, scale, noise (`AUGMENTATION_FACTOR=5`).  
+### 📊 Dataset
+- **Gestures**: 5 (`palm`, `fist`, `finger_up`, `finger_down`, `two_fingers`)  
+- **Samples**: 200 live captures per gesture  
+- **Augmentation** (×5 per sample):  
+  - Rotation: ±15°  
+  - Scaling: 0.9× – 1.1×  
+  - Gaussian Noise: mean=0, std=0.01  
+- **Total**: 1200 images per gesture → **6000 samples** overall  
+- **Split**: 80% training, 20% validation  
 
-3. **Train model**:  
-- Defaults: `epochs=50`, `batch_size=32`, `lr=0.001`  
-- Outputs:  
-  - `models/gesture_model.pth`  
-  - `models/gesture_labels.pkl`  
+### 🖐 Input Features
+- 21 hand landmarks × 3 coordinates (x, y, z) = **63 features**  
 
-Tips:
-- Collect data at multiple distances and lighting conditions.  
-- Ensure balanced samples for each gesture.
+### 🧠 Model Architecture (GestureNet)
+- Input layer: 63 → 63  
+- Hidden Layer 1: 63 → 128 (ReLU)  
+- Hidden Layer 2: 128 → 128 (ReLU)  
+- Output layer: 128 → 5  
+
+### ⚙ Training Setup
+- **Loss**: CrossEntropyLoss (multi-class classification)  
+- **Optimizer**: Adam, lr = 0.001  
+- **Epochs**: 50  
+- **Batch size**: 32  
+- **Device**: GPU (if available)  
+
+### 📈 Performance (averages across epochs)
+- Loss: **0.0275**  
+- Accuracy: **99.10%**  
+- Precision: **99.24%**  
+- Recall: **99.11%**  
+- F1 Score: **99.10%**  
+
+Outputs:
+- `models/gesture_model.pth`  
+- `models/gesture_labels.pkl`  
 
 ---
 
@@ -146,13 +129,12 @@ Tips:
 ```bash
 python code/recognize.py
 ```
-Overlay shows:
+Shows:
 - Predicted gesture
 - FPS
-- Confidence score (if implemented)
+- Confidence score  
 
 Press **ESC** to quit.  
-If unstable → collect more data, adjust `min_detection_confidence`.
 
 ---
 
@@ -160,10 +142,9 @@ If unstable → collect more data, adjust `min_detection_confidence`.
 ```bash
 python main.py
 ```
-Flow:
-1. Detect VLC session via `psutil` + HTTP API.  
-2. Prompt user for webcam activation.  
-3. Launch `gesture_vlc.py` for live control.
+- Detects VLC media playback.  
+- Prompts user to enable webcam gesture control.  
+- Starts `gesture_vlc.py` for real-time control.  
 
 Palm → Action mapping:
 - Palm → Fist → Play/Pause  
@@ -173,77 +154,18 @@ Palm → Action mapping:
 
 ---
 
-## ⚙ Configuration
-Variables in code:
-```python
-# vlc_controller.py
-vlc_http_url = "http://localhost:8080/requests"
-vlc_http_auth = ("", "vlcpassword")
-volume_step = 5
-continuous_step = 2
-```
-Optional `.env`:
-```env
-VLC_HOST=localhost
-VLC_PORT=8080
-VLC_PASSWORD=vlcpassword
-CAMERA_INDEX=0
-```
-
----
-
 ## 📂 File-by-File Explanation
-- **train_model.py** — Data collection + augmentation + training loop. Saves model & labels.  
-- **recognize.py** — Loads model, previews predictions via webcam.  
-- **gesture_vlc.py** — Core recognition & state machine. Maps gestures to VLC commands.  
-- **vlc_controller.py** — Sends commands to VLC via HTTP or keyboard.  
-- **main.py** — Monitors VLC process, launches gesture control when active.
+- **train_model.py** — Data collection, augmentation, training.  
+- **recognize.py** — Test trained model with webcam.  
+- **gesture_vlc.py** — Main recognition + palm-gated gesture FSM.  
+- **vlc_controller.py** — VLC control (HTTP API or hotkeys).  
+- **main.py** — VLC monitor + gesture process manager.  
+- **metrics_logger.py** — Logs training, inference, gesture usage.  
+- **plot_training_metrics.py** — Plots curves (Loss, Accuracy, Precision, Recall, F1).  
 
----
-
-## 🚀 Performance Tips & Tuning
-- Use GPU (`torch.cuda.is_available()`) for faster inference.  
-- Reduce frame size in `cv2.VideoCapture` for lower latency.  
-- Adjust `min_detection_confidence` in MediaPipe for stability.  
-- Smooth predictions using temporal averaging.
-
----
-
-## 🛠 Troubleshooting & FAQ
-| Problem | Solution |
-| ------- | -------- |
-| MediaPipe install fails | Install from official wheel. |
-| Camera not opening | Check permissions, close other apps. |
-| CUDA not available | Install matching PyTorch GPU build. |
-| VLC HTTP not responding | Check password/port in preferences. |
-| Gesture flicker | Collect more data, increase `min_confidence_frames`. |
-
----
-
-## 🔒 Security & Privacy
-- Webcam only activates after user consent.  
-- No images or videos stored by default.  
-- All inference local — no cloud calls.
-
----
-
-## 🗺 Roadmap / Ideas
-- Add new gestures  
-- Per-application profiles  
-- Multi-hand support  
-- On-screen HUD overlay  
-- Calibration wizard
-
----
-
-## 📜 License
-SPDX-License-Identifier: MIT  
-This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
-
----
 
 ## 🙏 Acknowledgements
 - [MediaPipe Hands](https://developers.google.com/mediapipe)  
 - [PyTorch](https://pytorch.org/)  
 - [OpenCV](https://opencv.org/)  
-- [VLC](https://www.videolan.org/vlc/)
+- [VLC](https://www.videolan.org/vlc/)  
